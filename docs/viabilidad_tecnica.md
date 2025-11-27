@@ -1,5 +1,4 @@
 # ESTUDIO DE VIABILIDAD DEL PROYECTO
-
 **Proyecto:** Agente de IA especializado en problemas del hogar\
 **Autor:** Francisco José Cortés Carmona -- 2º DAW
 
