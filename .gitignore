@@ -1,0 +1,41 @@
+# === ENTORNO VIRTUAL ===
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# === CLAVES Y ARCHIVOS SENSIBLES ===
+*.key
+*.pem
+*.p12
+
+# === ARCHIVOS DE CONFIGURACIÓN LOCAL ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# === CACHE ===
+.cache/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# === LOGS ===
+*.log
+
+# === CONFIG EDITOR ===
+.vscode/
+.idea/
+
+# === BUILD ===
+build/
+dist/
+*.egg-info/
+
+# === S.O. ===
+.DS_Store
+Thumbs.db
