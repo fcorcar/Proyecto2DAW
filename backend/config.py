@@ -6,7 +6,7 @@ load_dotenv()
 
 class Config:
     # Clave secreta para JWT (Tokens)
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "nf834F3c3dFD29Ddql256")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "cEnG3kJ5aCCOYON3lw5KX5HtSBgkQrvXoD7jxuIFA78=")
     
     # Configuracion de Base de Datos SQLite
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
