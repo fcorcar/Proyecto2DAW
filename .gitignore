@@ -1,4 +1,5 @@
-# === ENTORNO VIRTUAL ===
+############################# BACKEND #############################
+# ENTORNO VIRTUAL
 .env
 .venv
 env/
@@ -7,38 +8,81 @@ ENV/
 env.bak/
 venv.bak/
 
-# === CLAVES Y ARCHIVOS SENSIBLES ===
+# CLAVES Y ARCHIVOS SENSIBLES
 *.key
 *.pem
 *.p12
 
-# === ARCHIVOS DE CONFIGURACIÓN LOCAL ===
+# ARCHIVOS DE CONFIGURACIÓN LOCAL
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 *.sqlite3
 
-# === CACHE ===
+# CACHE
 .cache/
 .pytest_cache/
 .ipynb_checkpoints/
 
-# === LOGS ===
+# LOGS
 *.log
 
-# === CONFIG EDITOR ===
+# CONFIG EDITOR
 .vscode/
 .idea/
 
-# === BUILD ===
+# BUILD
 build/
 dist/
 *.egg-info/
 
-# === S.O. ===
+# S.O.
 .DS_Store
 Thumbs.db
 
-# === BD ===
+# BD
 *.db
+
+
+############################# FRONTEND #############################
+# Compiled output
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+.angular/
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnection.log
+testem.log
+typings/
+
+# System files
+.DS_Store
+Thumbs.db
