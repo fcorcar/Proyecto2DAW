@@ -39,3 +39,6 @@ dist/
 # === S.O. ===
 .DS_Store
 Thumbs.db
+
+# === BD ===
+*.db
