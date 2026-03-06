@@ -13,10 +13,11 @@ def registro():
     datos = request.get_json()
     email = datos.get('email')
     password = datos.get('password')
+    name = datos.get('name')
 
     # Validar que nos envia todo
-    if not email or not password:
-        return jsonify({"error": "Faltan datos (email o contraseña)"}), 400
+    if not email or not password or not name:
+        return jsonify({"error": "Faltan datos"}), 400
 
     # 2. Comprobar si el usuario ya existe en la bd
     usuario_existente = Usuario.query.filter_by(email=email).first()
@@ -28,6 +29,7 @@ def registro():
 
     # 4. Crear el nuevo usuario
     nuevo_usuario = Usuario(
+        name=name,
         email=email, 
         password_hash=password_encriptada,
         rol='usuario' 
@@ -67,6 +69,7 @@ def login():
         "token": access_token,
         "usuario": {
             "id": usuario.id,
+            "name": usuario.name,
             "email": usuario.email,
             "rol": usuario.rol
         }
