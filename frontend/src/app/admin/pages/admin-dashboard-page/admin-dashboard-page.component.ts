@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './admin-dashboard-page.component.html',
 })
-export default class AdminDashboardPageComponent {
+export class AdminDashboardPageComponent {
 
 }

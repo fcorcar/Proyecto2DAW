@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
   imports: [ReactiveFormsModule, JsonPipe, FormMsgErrorComponent],
   templateUrl: './login-page.component.html',
 })
-export default class LoginPageComponent {
+export class LoginPageComponent {
   private fb = inject(FormBuilder);
 
   projectName = environment.projectName;
