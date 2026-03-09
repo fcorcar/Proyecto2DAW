@@ -4,7 +4,7 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validator
 import { FormUtils } from '../../../utils/form-utils';
 import { FormMsgErrorComponent } from "../../../shared/components/form-msg-error/form-msg-error.component";
 import { environment } from '../../../../environments/environment';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { AlertMsgErrorComponent } from "../../../shared/components/alert-msg-error/alert-msg-error.component";
 import { AuthService } from '../../services/auth.service';
 
@@ -17,6 +17,7 @@ export class LoginPageComponent {
   projectName = environment.projectName;
   hasError = signal(false);
   isPosting = signal(false);
+  router = inject(Router);
 
   authService = inject(AuthService);
 
@@ -39,8 +40,16 @@ export class LoginPageComponent {
 
     const { email = '', password = '' } = this.loginForm.value;
 
-    this.authService.login(email, password).subscribe(resp => {
-      console.log(resp)
+    this.authService.login(email, password).subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        this.router.navigateByUrl('/');
+        return;
+      }
+
+      this.hasError.set(true);
+      setTimeout(() => {
+        this.hasError.set(false);
+      }, 2000);
     })
   }
 
