@@ -6,6 +6,7 @@ import { FormMsgErrorComponent } from "../../../shared/components/form-msg-error
 import { environment } from '../../../../environments/environment';
 import { RouterLink } from "@angular/router";
 import { AlertMsgErrorComponent } from "../../../shared/components/alert-msg-error/alert-msg-error.component";
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   imports: [ReactiveFormsModule, FormMsgErrorComponent, RouterLink, AlertMsgErrorComponent],
@@ -16,6 +17,8 @@ export class LoginPageComponent {
   projectName = environment.projectName;
   hasError = signal(false);
   isPosting = signal(false);
+
+  authService = inject(AuthService);
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.pattern(FormUtils.emailPattern)]],
@@ -36,7 +39,9 @@ export class LoginPageComponent {
 
     const { email = '', password = '' } = this.loginForm.value;
 
-    console.log({ email, password });
+    this.authService.login(email, password).subscribe(resp => {
+      console.log(resp)
+    })
   }
 
 }
