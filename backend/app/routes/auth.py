@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app.models import db, Usuario
 from app.utils.validators import is_valid_email, is_valid_password
 
@@ -80,6 +80,39 @@ def login():
     return jsonify({
         "mensaje": "Login exitoso",
         "token": access_token,
+        "usuario": {
+            "id": usuario.id,
+            "name": usuario.name,
+            "email": usuario.email,
+            "rol": usuario.rol
+        }
+    }), 200
+
+
+############# RUTA CHECK STATUS (GET) #############
+@auth_bp.route('/check-status', methods=['GET'])
+@jwt_required()  # Si el token no es valido, devuelve un 401 automaticamente.
+def check_status():
+    # 1. Obtener el ID del usuario del token validado
+    usuario_id = get_jwt_identity()
+
+    # 2. Buscar los datos actualizados del usuario en la base de datos
+    usuario = Usuario.query.get(usuario_id)
+
+    # 3. Validaciones extra de seguridad
+    if not usuario:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+        
+    if usuario.esta_bloqueado:
+        return jsonify({"error": "Esta cuenta ha sido bloqueada por un administrador"}), 403
+
+    # 4. Generar un token nuevo 
+    nuevo_token = create_access_token(identity=str(usuario.id))
+
+    # 5. Devolvemos el JSON
+    return jsonify({
+        "mensaje": "Token válido, sesión recuperada",
+        "token": nuevo_token,
         "usuario": {
             "id": usuario.id,
             "name": usuario.name,
