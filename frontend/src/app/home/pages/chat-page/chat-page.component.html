@@ -17,3 +17,14 @@
     <button>...</button>
   }
 </div>
+
+<div>
+  @if (authService.user()?.rol === 'admin') {
+    <a
+      routerLink="/admin/dashboard"
+    >
+      Panel Admin
+    </a>
+  }
+</div>
+
