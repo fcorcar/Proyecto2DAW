@@ -42,8 +42,8 @@ export class LoginPageComponent {
 
     this.authService.login(email, password).subscribe(isAuthenticated => {
       if (isAuthenticated) {
-        // this.router.navigateByUrl('/');
-        console.log("yet");
+        this.router.navigateByUrl('/home/chat');
+        // console.log("yet");
         return;
       }
 

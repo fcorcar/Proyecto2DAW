@@ -1,1 +1,19 @@
-<p>chat-page works!</p>
+<div>
+  @if (authService.authStatus() === 'authenticated') {
+    <span>
+      {{ authService.user()?.name }}
+    </span>
+
+    <button
+      (click)="authService.logout()"
+    >Cerrar Sesión</button>
+  }
+
+  @else {
+    <span>
+      ...
+    </span>
+
+    <button>...</button>
+  }
+</div>
