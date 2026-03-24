@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { AuthResponse } from '../interfaces/auth-response.interface';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 const baseUrl = environment.baseUrl;
@@ -16,6 +17,7 @@ export class AuthService {
   private _token = signal<string | null>(null);
 
   private http = inject(HttpClient);
+  private router = inject(Router);
 
   checkStatusResource = rxResource({
     loader: () => this.checkStatus(),
@@ -44,7 +46,7 @@ export class AuthService {
   checkStatus(): Observable<boolean> {
     const token = localStorage.getItem('token');
     if (!token) {
-      this.logout();
+      this.clearSessionData();
       return of(false);
     }
 
@@ -61,11 +63,8 @@ export class AuthService {
   }
 
   logout() {
-    this._user.set(null);
-    this._token.set(null);
-    this._authStatus.set('not-authenticated');
-
-    localStorage.removeItem('token');
+    this.clearSessionData();
+    this.router.navigateByUrl('/auth/login');
   }
 
   private handleAuthSuccess({ token, usuario }: AuthResponse) {
@@ -79,7 +78,16 @@ export class AuthService {
   }
 
   private handleAuthError( error: any ) {
-    this.logout();
+    this.clearSessionData();
     return of(false);
   }
+
+  private clearSessionData() {
+    this._user.set(null);
+    this._token.set(null);
+    this._authStatus.set('not-authenticated');
+    localStorage.removeItem('token');
+  }
+
+
 }
