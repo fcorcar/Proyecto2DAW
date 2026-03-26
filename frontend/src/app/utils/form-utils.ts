@@ -12,10 +12,9 @@ async function sleep() {
 
 export class FormUtils {
   // Expresiones regulares
-  static namePattern = '^([a-zA-Z]+) ([a-zA-Z]+)$';
   static emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$';
   static passwordPattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$';
-  static notOnlySpacesPattern = '^[a-zA-Z0-9]+$';
+  static alphanumericPattern = '^[a-zA-Z0-9]+$';
 
   // Devuelve el msg de error correspondiente
   private static getTextError(errors: ValidationErrors): string | null {
@@ -46,11 +45,8 @@ export class FormUtils {
             case this.emailPattern:
               return 'El formato del correo electrónico no es válido.';
 
-            case this.namePattern:
-              return 'Debe introducir nombre y apellido.';
-
-            case this.notOnlySpacesPattern:
-              return 'No puede contener espacios.';
+            case this.alphanumericPattern:
+              return 'Solo letras y números, sin espacios.';
 
             case this.passwordPattern:
               return 'Debe contener una mayúscula, una minúscula y un número.'

@@ -46,7 +46,20 @@ export class AuthService {
       })
       .pipe(
         map((resp) => this.handleAuthSuccess(resp)),
-        catchError((error: any) => this.handleAuthError(error)),
+        catchError((error: any) => this.handleAuthError(error, '/auth/login')),
+      );
+  }
+
+  register(name: string, email: string, password: string): Observable<boolean> {
+    return this.http
+      .post<AuthResponse>(`${baseUrl}/auth/registro`, {
+        name: name,
+        email: email,
+        password: password,
+      })
+      .pipe(
+        map((resp) => this.handleAuthSuccess(resp)),
+        catchError((error: any) => this.handleAuthError(error, '/auth/registro')),
       );
   }
 
@@ -65,7 +78,7 @@ export class AuthService {
       })
       .pipe(
         map((resp) => this.handleAuthSuccess(resp)),
-        catchError((error: any) => this.handleAuthError(error)),
+        catchError((error: any) => this.handleAuthError(error, '/auth/login')),
       );
   }
 
@@ -84,13 +97,13 @@ export class AuthService {
     return true;
   }
 
-  private handleAuthError( error: any ) {
+  private handleAuthError( error: any, redirectRoute: string ) {
     this.clearSessionData();
 
     const backendMessage = error.error?.error || 'Ocurrió un error inesperado';
     this._errorMessage.set(backendMessage);
 
-    this.router.navigateByUrl('/auth/login');
+    this.router.navigateByUrl(redirectRoute);
     return of(false);
   }
 
