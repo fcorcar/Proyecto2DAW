@@ -1,0 +1,30 @@
+<div>
+  @if (authService.authStatus() === 'authenticated') {
+    <span>
+      {{ authService.user()?.name }}
+    </span>
+
+    <button
+      (click)="authService.logout()"
+    >Cerrar Sesión</button>
+  }
+
+  @else {
+    <span>
+      ...
+    </span>
+
+    <button>...</button>
+  }
+</div>
+
+<div>
+  @if (authService.user()?.rol === 'admin') {
+    <a
+      routerLink="/admin/dashboard"
+    >
+      Panel Admin
+    </a>
+  }
+</div>
+

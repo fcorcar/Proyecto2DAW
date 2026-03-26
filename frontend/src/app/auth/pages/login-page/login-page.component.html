@@ -1,0 +1,97 @@
+<div
+  class="bg-linear-to-br from-gray-900 via-slate-800 to-black min-h-screen flex items-center justify-center p-4"
+>
+  <div
+    class="max-w-md w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 shadow-2xl text-white"
+  >
+    <!-- TITULO -->
+    <div class="text-center mb-8">
+      <!-- Icono -->
+      <i
+        class="fa-regular fa-house text-5xl mx-auto text-cyan-400 mb-4 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]"
+      ></i>
+
+      <h1
+        class="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-cyan-400"
+      >
+        {{ projectName }}
+      </h1>
+      <p class="text-gray-400 mt-2 text-sm">
+        Soluciones inteligentes para cada hogar
+      </p>
+    </div>
+
+    <!-- FORMULARIO -->
+    <form class="space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-300 mb-2"
+          >Correo Electrónico</label
+        >
+        <input
+          type="email"
+          class="w-full mb-1 px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all text-white placeholder-gray-600"
+          placeholder="usuario@dominio.es"
+          formControlName="email"
+        />
+
+        <shared-form-msg-error [form]="loginForm" fieldName="email" />
+      </div>
+
+      <!-- Clave -->
+      <div>
+        <label
+          for="password"
+          class="block text-sm font-medium text-gray-300 mb-2"
+          >Contraseña</label
+        >
+        <input
+          type="password"
+          class="w-full mb-1 px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all text-white placeholder-gray-600"
+          placeholder="••••••••"
+          formControlName="password"
+        />
+
+        <shared-form-msg-error [form]="loginForm" fieldName="password" />
+      </div>
+
+      <!-- Btn submit -->
+      <button
+        type="submit"
+        class="w-full cursor-pointer flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-linear-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-gray-900 transition-all duration-300 transform hover:-translate-y-1"
+      >
+        Iniciar Sesión
+      </button>
+    </form>
+
+    <!-- ENLACE REGISTRO -->
+    <p class="mt-8 text-center text-sm text-gray-500">
+      ¿Eres nuevo?
+      <a
+        routerLink="/auth/registro"
+        class="font-medium text-indigo-400 hover:text-indigo-300 transition-colors ml-1"
+        >Crea una cuenta</a
+      >
+    </p>
+  </div>
+</div>
+
+
+<!-- <div class="m-10">
+  <h2>Form Valid: {{ loginForm.valid | json }}</h2>
+
+  <h2>Form Status: {{ loginForm.status | json }}</h2>
+
+  <h2>Form Pending: {{ loginForm.pending | json }}</h2>
+
+  <h2>Form errors:</h2>
+  <pre>{{ loginForm.errors | json }}</pre>
+
+  <br />
+
+  <h5>Email</h5>
+  <pre>{{ loginForm.controls["email"].errors | json }}</pre>
+
+  <h5>Password</h5>
+  <pre>{{ loginForm.controls["password"].errors | json }}</pre>
+</div> -->
