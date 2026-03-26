@@ -31,6 +31,13 @@ export class AuthService {
   user = computed(() => this._user());
   token = computed(() => this._token());
 
+  private _errorMessage = signal<string>('');
+  errorMessage = computed(() => this._errorMessage());
+
+  clearError() {
+    this._errorMessage.set('');
+  }
+
   login(email: string, password: string): Observable<boolean> {
     return this.http
       .post<AuthResponse>(`${baseUrl}/auth/login`, {
@@ -79,6 +86,11 @@ export class AuthService {
 
   private handleAuthError( error: any ) {
     this.clearSessionData();
+
+    const backendMessage = error.error?.error || 'Ocurrió un error inesperado';
+    this._errorMessage.set(backendMessage);
+
+    this.router.navigateByUrl('/auth/login');
     return of(false);
   }
 
