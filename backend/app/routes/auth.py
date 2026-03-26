@@ -74,3 +74,20 @@ def check_status():
     respuesta.update(datos_sesion)
     return jsonify(respuesta), 200
 
+
+############# RUTA CHECK EMAIL (POST) #############
+@auth_bp.route('/check-email', methods=['POST'])
+def check_email():
+    datos = request.get_json()
+    email = datos.get('email')
+
+    # 1. Validaciones basicas
+    if not email:
+        return jsonify({"error": "Email no proporcionado"}), 400
+
+    # 2. Comprobar si el email esta registrado y devolver boolean
+    esta_en_uso = AuthService.check_email_exists(email)
+
+    # 3. Respuesta JSON
+    return jsonify({"isTaken": esta_en_uso}), 200
+

@@ -66,3 +66,10 @@ class AuthService:
         # Retornamos los datos de sesion
         datos_sesion = AuthService._generar_datos_sesion(usuario)
         return datos_sesion, None
+    
+    @staticmethod
+    def check_email_exists(email):
+        """Comprueba si un email ya está registrado."""
+        if UserService.get_by_email(email):
+            return True
+        return False

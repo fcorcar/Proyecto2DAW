@@ -59,7 +59,9 @@ export class AuthService {
       })
       .pipe(
         map((resp) => this.handleAuthSuccess(resp)),
-        catchError((error: any) => this.handleAuthError(error, '/auth/registro')),
+        catchError((error: any) =>
+          this.handleAuthError(error, '/auth/registro'),
+        ),
       );
   }
 
@@ -87,6 +89,17 @@ export class AuthService {
     this.router.navigateByUrl('/auth/login');
   }
 
+  checkEmailTaken(email: string): Observable<boolean> {
+    return this.http
+      .post<{ isTaken: boolean }>(`${baseUrl}/auth/check-email`, {
+        email: email
+      })
+      .pipe(
+        map((resp) => resp.isTaken),
+        catchError(() => of(false)),
+      );
+  }
+
   private handleAuthSuccess({ token, usuario }: AuthResponse) {
     this._user.set(usuario);
     this._authStatus.set('authenticated');
@@ -97,7 +110,7 @@ export class AuthService {
     return true;
   }
 
-  private handleAuthError( error: any, redirectRoute: string ) {
+  private handleAuthError(error: any, redirectRoute: string) {
     this.clearSessionData();
 
     const backendMessage = error.error?.error || 'Ocurrió un error inesperado';
@@ -113,6 +126,4 @@ export class AuthService {
     this._authStatus.set('not-authenticated');
     localStorage.removeItem('token');
   }
-
-
 }
