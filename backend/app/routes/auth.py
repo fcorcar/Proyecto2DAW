@@ -1,122 +1,76 @@
 from flask import Blueprint, request, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from app.models import db, Usuario
 from app.utils.validators import is_valid_email, is_valid_password
+from app.services.auth_service import AuthService
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
-# Creamos el Blueprint
 auth_bp = Blueprint('auth', __name__)
 
 ############# RUTA REGISTRO (POST) #############
 @auth_bp.route('/registro', methods=['POST'])
 def registro():
-    # 1. Recoger los datos JSON que envia Angular
     datos = request.get_json()
     email = datos.get('email')
     password = datos.get('password')
     name = datos.get('name')
 
-    # Validar que nos envia todo
+    # 1. Validaciones basicas
     if not email or not password or not name:
         return jsonify({"error": "Faltan datos"}), 400
-    
-    # Validar el email
     if not is_valid_email(email):
         return jsonify({"error": "El formato del correo electrónico no es válido"}), 400
-
-    # Validar contraseña  
     if not is_valid_password(password):
         return jsonify({"error": "La contraseña debe tener mínimo 6 caracteres, una mayúscula, una minúscula y un número"}), 400
 
-    # 2. Comprobar si el usuario ya existe en la bd
-    usuario_existente = Usuario.query.filter_by(email=email).first()
-    if usuario_existente:
-        return jsonify({"error": "El email ya está registrado"}), 409
+    # 2. Crear usuario y devolver datos de sesion
+    datos_sesion, error = AuthService.registrar(name, email, password)
+    
+    if error:
+        return jsonify({"error": error}), 409
 
-    # 3. Encriptar la contraseña
-    password_encriptada = generate_password_hash(password)
-
-    # 4. Crear el nuevo usuario
-    nuevo_usuario = Usuario(
-        name=name,
-        email=email, 
-        password_hash=password_encriptada,
-        rol='usuario' 
-    )
-
-    # 5. Guardar en la bd
-    db.session.add(nuevo_usuario)
-    db.session.commit()
-
-    # 6. Devolvemos un mensaje de exito a Angular
-    return jsonify({"mensaje": "Usuario registrado correctamente"}), 201
+    # 3. Respuesta JSON
+    respuesta = {"mensaje": "Usuario registrado y logueado correctamente"}
+    respuesta.update(datos_sesion)
+    return jsonify(respuesta), 201
 
 
 ############# RUTA LOGIN (POST) #############
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    # 1. Recoger los datos JSON que envia Angular
     datos = request.get_json()
     email = datos.get('email')
     password = datos.get('password')
 
-    # Valida el email y la contraseña
+    # 1. Validaciones basicas
     if not is_valid_email(email) or not is_valid_password(password):
         return jsonify({"error": "Email o contraseña incorrectos"}), 401
 
-    # 2. Comprobar si el usuario existe y si la contraseña coincide con el hash
-    usuario = Usuario.query.filter_by(email=email).first()
-    if not usuario or not check_password_hash(usuario.password_hash, password):
-        return jsonify({"error": "Email o contraseña incorrectos"}), 401
+    # 2. Comprobar si el usuario es valido para iniciar sesion y devolver datos de sesion
+    datos_sesion, error = AuthService.login(email, password)
 
-    # 3. Comprobar si esta bloqueado
-    if usuario.esta_bloqueado:
-        return jsonify({"error": "Esta cuenta ha sido bloqueada por un administrador"}), 403
+    if error:
+        return jsonify({"error": error}), 401 
 
-    # 4. Generar el Token
-    access_token = create_access_token(identity=str(usuario.id))
-
-    # 5. Devolver el Token y los datos del usuario a Angular
-    return jsonify({
-        "mensaje": "Login exitoso",
-        "token": access_token,
-        "usuario": {
-            "id": usuario.id,
-            "name": usuario.name,
-            "email": usuario.email,
-            "rol": usuario.rol
-        }
-    }), 200
+    # 3. Respuesta JSON
+    respuesta = {"mensaje": "Login exitoso"}
+    respuesta.update(datos_sesion)
+    return jsonify(respuesta), 200
 
 
 ############# RUTA CHECK STATUS (GET) #############
 @auth_bp.route('/check-status', methods=['GET'])
-@jwt_required()  # Si el token no es valido, devuelve un 401 automaticamente.
+@jwt_required()
 def check_status():
     # 1. Obtener el ID del usuario del token validado
     usuario_id = get_jwt_identity()
 
-    # 2. Buscar los datos actualizados del usuario en la base de datos
-    usuario = Usuario.query.get(usuario_id)
+    # 2. Comprobar si el usuario es valido para seguir logueado y devolver datos de sesion
+    datos_sesion, error = AuthService.check_status(usuario_id)
 
-    # 3. Validaciones extra de seguridad
-    if not usuario:
-        return jsonify({"error": "Usuario no encontrado"}), 404
-        
-    if usuario.esta_bloqueado:
-        return jsonify({"error": "Esta cuenta ha sido bloqueada por un administrador"}), 403
+    if error:
+        return jsonify({"error": error}), 401 
+    
+    # 3. Respuesta JSON
+    respuesta = {"mensaje": "Sesión válida"}
+    respuesta.update(datos_sesion)
+    return jsonify(respuesta), 200
 
-    # 4. Generar un token nuevo 
-    nuevo_token = create_access_token(identity=str(usuario.id))
-
-    # 5. Devolvemos el JSON
-    return jsonify({
-        "mensaje": "Token válido, sesión recuperada",
-        "token": nuevo_token,
-        "usuario": {
-            "id": usuario.id,
-            "name": usuario.name,
-            "email": usuario.email,
-            "rol": usuario.rol
-        }
-    }), 200
