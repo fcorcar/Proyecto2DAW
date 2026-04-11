@@ -26,3 +26,8 @@ class UserService:
     def get_by_id(usuario_id):
         """Busca y devuelve un usuario por su id."""
         return Usuario.query.get(usuario_id)
+    
+    @staticmethod
+    def get_all_users():
+        """Devuelve todos los usuarios."""
+        return Usuario.query.all()
