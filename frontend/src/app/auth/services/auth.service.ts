@@ -100,6 +100,7 @@ export class AuthService {
       );
   }
 
+  // Metodos sencundarios
   private handleAuthSuccess({ token, usuario }: AuthResponse) {
     this._user.set(usuario);
     this._authStatus.set('authenticated');
@@ -110,7 +111,7 @@ export class AuthService {
     return true;
   }
 
-  private handleAuthError(error: any, redirectRoute: string) {
+  handleAuthError(error: any, redirectRoute: string) {
     this.clearSessionData();
 
     const backendMessage = error.error?.error || 'Ocurrió un error inesperado';
