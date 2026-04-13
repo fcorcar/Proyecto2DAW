@@ -1,4 +1,4 @@
-from app.models import db, Usuario
+from app.models import db, Usuario, Conversacion, Mensaje
 from werkzeug.security import generate_password_hash
 
 class UserService:
@@ -31,3 +31,27 @@ class UserService:
     def get_all_users():
         """Devuelve todos los usuarios."""
         return Usuario.query.all()
+    
+    @staticmethod
+    def get_admin_stats():
+        """Obtiene el conteo total de las tablas principales."""
+        return {
+            "totalUsuarios": Usuario.query.count(),
+            "totalConversaciones": Conversacion.query.count(),
+            "totalMensajes": Mensaje.query.count()
+        }
+    
+    @staticmethod
+    def toggle_user_block(usuario_id):
+        usuario = Usuario.query.get(usuario_id)
+        
+        if not usuario:
+            return None, "Usuario no encontrado"
+        
+        if usuario.rol == 'admin':
+            return None, "No se puede bloquear a un administrador"
+
+        usuario.esta_bloqueado = not usuario.esta_bloqueado
+        db.session.commit()
+        
+        return usuario, None

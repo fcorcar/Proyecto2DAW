@@ -1,7 +1,6 @@
 <div
   class="min-h-screen bg-linear-to-br from-gray-900 via-slate-800 to-black p-4 md:p-8 font-sans text-gray-200"
 >
-
   <!-- CABECERA -->
   <header
     class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between mb-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-lg"
@@ -11,7 +10,7 @@
         class="fa-solid fa-user-gear text-2xl mx-auto text-cyan-400 mb-1 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]"
       ></i>
       <h1
-        class="text-2xl font-bold  text-cyan-400  drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]"
+        class="text-2xl font-bold text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]"
       >
         Dashboard
       </h1>
@@ -36,7 +35,6 @@
     </div>
   </header>
 
-
   <!-- SECCION DE TOTALES -->
   <section
     class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"
@@ -46,7 +44,7 @@
     >
       <div>
         <p class="text-sm text-gray-400 font-medium mb-1">Total Usuarios</p>
-        <h3 class="text-3xl font-bold text-white">{{ totalUsuarios }}</h3>
+        <h3 class="text-3xl font-bold text-white">{{ statsResource.value()?.totalUsuarios ?? 0 }}</h3>
       </div>
       <div class="p-3 bg-indigo-500/20 rounded-xl text-indigo-400">
         <i class="text-2xl fa-solid fa-user-group"></i>
@@ -58,7 +56,7 @@
     >
       <div>
         <p class="text-sm text-gray-400 font-medium mb-1">Conversaciones IA</p>
-        <h3 class="text-3xl font-bold text-white">{{ totalConversaciones }}</h3>
+        <h3 class="text-3xl font-bold text-white">{{ statsResource.value()?.totalConversaciones ?? 0 }}</h3>
       </div>
       <div class="p-3 bg-cyan-500/20 rounded-xl text-cyan-400">
         <i class="text-2xl fa-solid fa-comments"></i>
@@ -70,7 +68,7 @@
     >
       <div>
         <p class="text-sm text-gray-400 font-medium mb-1">Total Mensajes</p>
-        <h3 class="text-3xl font-bold text-white">{{ totalMensajes }}</h3>
+        <h3 class="text-3xl font-bold text-white">{{ statsResource.value()?.totalMensajes ?? 0 }}</h3>
       </div>
       <div class="p-3 bg-emerald-500/20 rounded-xl text-emerald-400">
         <i class="text-2xl fa-solid fa-envelope"></i>
@@ -78,103 +76,110 @@
     </div>
   </section>
 
-
   <!-- SECCION DE USUARIOS -->
-  <section
-    class="max-w-7xl mx-auto bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden"
-  >
-    <div class="p-6 border-b border-white/10">
-      <h2 class="text-xl font-bold text-white">Directorio de Usuarios</h2>
-      <p class="text-sm text-gray-400 mt-1">
-        Gestiona los accesos y bloqueos de la red del hogar.
-      </p>
+  @if (usuariosResource.isLoading()) {
+    <div class="loading-spinner">
+      <p>Cargando datos de forma segura...</p>
     </div>
+  }
 
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
+  @if (usuariosResource.value(); as usuarios) {
+    <section
+      class="max-w-7xl mx-auto bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden"
+    >
+      <div class="p-6 border-b border-white/10">
+        <h2 class="text-xl font-bold text-white">Directorio de Usuarios</h2>
+        <p class="text-sm text-gray-400 mt-1">
+          Gestiona los accesos y bloqueos de la red del hogar.
+        </p>
+      </div>
 
-        <thead>
-          <tr
-            class="bg-gray-900/50 text-gray-400 text-sm uppercase tracking-wider"
-          >
-            <th class="p-4 font-medium">ID</th>
-            <th class="p-4 font-medium">Usuario</th>
-            <th class="p-4 font-medium">Email</th>
-            <th class="p-4 font-medium">Rol</th>
-            <th class="p-4 font-medium">Estado</th>
-            <th class="p-4 font-medium text-right">Acciones</th>
-          </tr>
-        </thead>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr
+              class="bg-gray-900/50 text-gray-400 text-sm uppercase tracking-wider"
+            >
+              <th class="p-4 font-medium">ID</th>
+              <th class="p-4 font-medium">Usuario</th>
+              <th class="p-4 font-medium">Email</th>
+              <th class="p-4 font-medium">Rol</th>
+              <th class="p-4 font-medium">Estado</th>
+              <th class="p-4 font-medium text-right">Acciones</th>
+            </tr>
+          </thead>
 
-        <tbody class="divide-y divide-white/5">
-          @for (user of usuarios; track user.id) {
-            <tr class="hover:bg-white/2 transition-colors">
-              <td class="p-4 font-mono text-gray-400">#{{ user.id }}</td>
-              <td class="p-4 font-mono text-gray-400">{{ user.name }}</td>
-              <td class="p-4 font-medium text-white">{{ user.email }}</td>
-              <td class="p-4">
-                @if (user.rol === "admin") {
-                  <span
-                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                    >Admin</span
-                  >
-                } @else {
-                  <span
-                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-500/20 text-gray-300 border border-gray-500/30"
-                    >Usuario</span
-                  >
-                }
-              </td>
-              <td class="p-4">
-                @if (user.esta_bloqueado) {
-                  <span
-                    class="flex items-center gap-1.5 w-fit px-2.5 py-1 text-xs font-semibold rounded-full bg-red-500/20 text-red-400 border border-red-500/30"
-                  >
+          <tbody class="divide-y divide-white/5">
+            @for (user of usuarios; track user.id) {
+              <tr class="hover:bg-white/2 transition-colors">
+                <td class="p-4 font-mono text-gray-400">#{{ user.id }}</td>
+                <td class="p-4 font-mono text-gray-400">{{ user.name }}</td>
+                <td class="p-4 font-medium text-white">{{ user.email }}</td>
+                <td class="p-4">
+                  @if (user.rol === "admin") {
                     <span
-                      class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"
-                    ></span>
-                    Bloqueado
-                  </span>
-                } @else {
-                  <span
-                    class="flex items-center gap-1.5 w-fit px-2.5 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-500/30"
-                  >
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                    Activo
-                  </span>
-                }
-              </td>
-              <td class="p-4 text-right">
-                @if (user.esta_bloqueado) {
-                  <button
-                    (click)="toggleBloqueo(user)"
-                    class="cursor-pointer px-3 py-1.5 text-sm font-medium text-green-400 bg-green-500/10 border border-green-500/30 rounded-lg hover:bg-green-500/20 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    Desbloquear
-                  </button>
-                } @else {
-                  <button
-                    (click)="toggleBloqueo(user)"
-                    class="cursor-pointer px-3 py-1.5 text-sm font-medium text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg hover:bg-red-500/20 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
-                    [disabled]="user.rol === 'admin'"
-                    [class.opacity-50]="user.rol === 'admin'"
-                    [class.cursor-not-allowed]="user.rol === 'admin'"
-                  >
-                    Bloquear
-                  </button>
-                }
-              </td>
-            </tr>
-
-          } @empty {
-            <tr>
-              <td colspan="5" class="p-8 text-center text-gray-500">
-                No se encontraron usuarios en la base de datos.
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </section>
+                      class="px-2.5 py-1 text-xs font-semibold rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                      >Admin</span
+                    >
+                  } @else {
+                    <span
+                      class="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-500/20 text-gray-300 border border-gray-500/30"
+                      >Usuario</span
+                    >
+                  }
+                </td>
+                <td class="p-4">
+                  @if (user.esta_bloqueado) {
+                    <span
+                      class="flex items-center gap-1.5 w-fit px-2.5 py-1 text-xs font-semibold rounded-full bg-red-500/20 text-red-400 border border-red-500/30"
+                    >
+                      <span
+                        class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"
+                      ></span>
+                      Bloqueado
+                    </span>
+                  } @else {
+                    <span
+                      class="flex items-center gap-1.5 w-fit px-2.5 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-500/30"
+                    >
+                      <span
+                        class="w-1.5 h-1.5 rounded-full bg-green-500"
+                      ></span>
+                      Activo
+                    </span>
+                  }
+                </td>
+                <td class="p-4 text-right">
+                  @if (user.esta_bloqueado) {
+                    <button
+                      (click)="toggleBloqueo(user)"
+                      class="cursor-pointer px-3 py-1.5 text-sm font-medium text-green-400 bg-green-500/10 border border-green-500/30 rounded-lg hover:bg-green-500/20 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      Desbloquear
+                    </button>
+                  } @else {
+                    <button
+                      (click)="toggleBloqueo(user)"
+                      class="cursor-pointer px-3 py-1.5 text-sm font-medium text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg hover:bg-red-500/20 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                      [disabled]="user.rol === 'admin'"
+                      [class.opacity-50]="user.rol === 'admin'"
+                      [class.cursor-not-allowed]="user.rol === 'admin'"
+                    >
+                      Bloquear
+                    </button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="p-8 text-center text-gray-500">
+                  No se encontraron usuarios en la base de datos.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
 </div>
