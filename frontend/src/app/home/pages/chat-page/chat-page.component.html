@@ -1,30 +1,114 @@
-<div>
-  @if (authService.authStatus() === 'authenticated') {
-    <span>
-      {{ authService.user()?.name }}
-    </span>
+<div class="flex h-screen bg-linear-to-br from-gray-900 via-slate-800 to-black text-gray-200 overflow-hidden font-sans">
 
-    <button
-      (click)="authService.logout()"
-    >Cerrar Sesión</button>
-  }
+  <!-- MENU LATERAL -->
+  <aside class="w-72 flex flex-col bg-white/5 backdrop-blur-xl border-r border-white/10 shadow-2xl z-20">
+    <!-- BTN nueva conversacion -->
+    <div class="p-4">
+      <button class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all group">
+        <i class="fa-solid fa-plus text-cyan-400 group-hover:scale-110 transition-transform"></i>
+        <span class="font-medium">Nueva Conversación</span>
+      </button>
+    </div>
 
-  @else {
-    <span>
-      ...
-    </span>
+    <!-- Conversaciones -->
+    <nav class="flex-1 overflow-y-auto px-3 space-y-1">
+      @for (conv of conversations(); track conv.id) {
 
-    <button>...</button>
-  }
+        <div class="group relative flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all"
+             [ngClass]="{
+                'bg-white/10': activeConversationId() === conv.id,
+                'hover:bg-white/5': activeConversationId() !== conv.id
+             }"
+             (click)="activeConversationId.set(conv.id)">
+
+          <div class="flex items-center gap-3 overflow-hidden">
+            <i class="fa-regular fa-comment-dots text-gray-500"></i>
+            <span class="truncate text-sm font-medium">{{ conv.title }}</span>
+          </div>
+
+          <button (click)="toggleMenu(conv.id, $event)" class="opacity-0 group-hover:opacity-100 p-1 hover:text-cyan-400 transition-opacity">
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
+
+          @if (menuOpenId() === conv.id) {
+            <div class="absolute right-2 top-10 w-32 bg-slate-800 border border-white/10 rounded-lg shadow-xl py-1 z-30">
+              <button (click)="renameConversation(conv.id)" class="w-full text-left px-4 py-2 text-xs hover:bg-white/10">Renombrar</button>
+              <button (click)="deleteConversation(conv.id)" class="w-full text-left px-4 py-2 text-xs hover:bg-white/10 text-red-400">Eliminar</button>
+            </div>
+          }
+        </div>
+      }
+    </nav>
+
+    <!-- Botones -->
+    <div class="p-4 border-t border-white/10 space-y-2">
+      @if (isAdmin()) {
+        <button routerLink="/admin/dashboard" class="w-full flex items-center gap-3 p-3 text-sm text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-colors">
+          <i class="fa-solid fa-shield-halved text-[18px]"></i>
+          Admin Dashboard
+        </button>
+      }
+      <button (click)="logout()" class="w-full flex items-center gap-3 p-3 text-sm text-gray-400 hover:bg-red-500/10 hover:text-red-400 rounded-xl transition-colors">
+        <i class="fa-solid fa-right-from-bracket text-[18px]"></i>
+        Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- PRINCIPAL -->
+  <main class="flex-1 flex flex-col relative">
+
+    <!-- CABECERA -->
+    <header class="h-16 flex items-center justify-between px-6 bg-white/5 backdrop-blur-md border-b border-white/10">
+      <div class="flex items-center gap-2">
+        <i class="fa-regular fa-house text-[27px] text-cyan-400 mb-1 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]"></i>
+        <h2 class="text-lg font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-cyan-400">Chat Home AI</h2>
+      </div>
+
+      <div class="flex items-center gap-3 p-2 hover:bg-white/5 rounded-full cursor-pointer transition-all">
+        <span class="hidden md:block text-xs font-medium text-gray-400">{{ userName() }}</span>
+        <div class="w-8 h-8 rounded-full bg-linear-to-br from-indigo-600 to-cyan-600 border border-white/20 flex items-center justify-center text-xs font-bold shadow-lg">
+          {{ userName()?.charAt(0) }}
+        </div>
+      </div>
+    </header>
+
+    <!-- Bloque de mensajes - Conversacion -->
+    <section class="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-white/10">
+
+      <div class="max-w-4xl mx-auto space-y-6 flex flex-col">
+        @for (msg of messages(); track $index) {
+
+          <div class=" flex w-full" [class.justify-end]="msg.sender === 'user'">
+
+            <div class="max-w-[85%] md:max-w-[75%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm"
+                 [ngClass]="{
+                    'bg-white/10 border border-white/10': msg.sender === 'ia',
+                    'bg-indigo-600/20 border border-indigo-500/30': msg.sender === 'user'
+                 }">
+              {{ msg.text }}
+            </div>
+
+          </div>
+        }
+      </div>
+
+    </section>
+
+    <!-- Bloque input - Conversacion -->
+    <section class="p-6 bg-transparent">
+      <div class="max-w-4xl mx-auto relative group">
+        <input type="text"
+               [(ngModel)]="newMessage"
+               (keyup.enter)="sendMessage()"
+               placeholder="Escribe un mensaje a tu hogar..."
+               class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm placeholder-gray-500 shadow-2xl">
+        <button (click)="sendMessage()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-300 hover:text-cyan-300 hover:scale-110 transition-all">
+          <i class="fa-regular fa-paper-plane"></i>
+        </button>
+      </div>
+    </section>
+
+  </main>
 </div>
-
-<div>
-  @if (authService.user()?.rol === 'admin') {
-    <a
-      routerLink="/admin/dashboard"
-    >
-      Panel Admin
-    </a>
-  }
-</div>
-
