@@ -15,5 +15,5 @@ class Config:
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'database.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    # API Key de Google
-    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+    # API Key de Groq
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
