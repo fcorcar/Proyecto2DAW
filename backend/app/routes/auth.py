@@ -41,8 +41,8 @@ def login():
     password = datos.get('password')
 
     # 1. Validaciones basicas
-    if not is_valid_email(email) or not is_valid_password(password):
-        return jsonify({"error": "Email o contraseña incorrectos"}), 401
+    if not email or not password:
+        return jsonify({"error": "Las credenciales no son válidas"}), 401
 
     # 2. Comprobar si el usuario es valido para iniciar sesion y devolver datos de sesion
     datos_sesion, error = AuthService.login(email, password)

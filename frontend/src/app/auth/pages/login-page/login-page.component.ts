@@ -19,16 +19,9 @@ export class LoginPageComponent {
 
   // Formulario Login
   loginForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required]],
-    password: ['', [Validators.required]]
+    email: [''],
+    password: ['']
   });
-
-  // loginForm: FormGroup = this.fb.group({
-  //   email: ['', [Validators.required, Validators.pattern(FormUtils.emailPattern)]],
-  //   password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(FormUtils.passwordPattern)]]
-  // });
-
-
 
 
   onSubmit() {

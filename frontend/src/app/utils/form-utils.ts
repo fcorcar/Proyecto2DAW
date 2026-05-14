@@ -14,41 +14,41 @@ export class FormUtils {
       switch (key) {
         // Validaciones predeterminadas
         case 'required':
-          return 'Campo requerido.';
+          return 'Campo requerido';
 
         case 'minlength':
-          return `Mínimo de ${errors['minlength'].requiredLength} caracteres.`;
+          return `Mínimo de ${errors['minlength'].requiredLength} caracteres`;
 
         case 'min':
-          return `Valor mínimo de ${errors['min'].min}.`;
+          return `Valor mínimo de ${errors['min'].min}`;
 
         case 'email':
-          return `Introduce un email válido.`;
+          return `Introduce un email válido`;
 
         // Validaciones personalizadas
         case 'emailTaken':
-          return `Este correo electrónico ya está en uso.`;
+          return `Este correo electrónico ya está en uso`;
 
         case 'notStrider':
-          return `No es posible usar esta cadena.`;
+          return `No es posible usar esta cadena`;
 
         case 'pattern':
           switch (errors['pattern'].requiredPattern) {
             case this.emailPattern:
-              return 'El formato del correo electrónico no es válido.';
+              return 'El formato del correo electrónico no es válido';
 
             case this.alphanumericPattern:
-              return 'Solo letras y números, sin espacios.';
+              return 'Solo letras y números, sin espacios';
 
             case this.passwordPattern:
-              return 'Debe contener una mayúscula, una minúscula y un número.';
+              return 'Debe contener una mayúscula, una minúscula y un número';
 
             default:
-              return 'Pattern no controlado.';
+              return 'Pattern no controlado';
           }
 
         default:
-          return `Error no controlado "${key}".`;
+          return `Error no controlado "${key}"`;
       }
     }
     return null;
