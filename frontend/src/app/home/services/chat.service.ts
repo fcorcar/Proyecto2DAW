@@ -2,23 +2,9 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ChatResponse, Conversation, Message } from '../interfaces/chat.interface';
 
 const baseUrl = environment.baseUrl;
-
-export interface ChatResponse {
-  conversationId: number;
-  response: string;
-}
-
-export interface Conversation {
-  id: number;
-  title: string;
-}
-
-export interface Message {
-  text: string;
-  sender: 'usuario' | 'ia';
-}
 
 @Injectable({
   providedIn: 'root'

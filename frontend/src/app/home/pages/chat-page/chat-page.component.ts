@@ -6,11 +6,8 @@ import { NgClass } from '@angular/common';
 import { ChatService } from '../../services/chat.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MarkdownComponent } from 'ngx-markdown';
+import { Message } from '../../interfaces/chat.interface';
 
-interface Message {
-  text: string;
-  sender: 'usuario' | 'ia';
-}
 
 @Component({
   imports: [FormsModule, NgClass, RouterLink, MarkdownComponent],
