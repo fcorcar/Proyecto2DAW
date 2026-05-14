@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, inject, signal, ViewChild } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RouterLink } from "@angular/router";
 import { FormsModule, NgModel } from '@angular/forms';
@@ -132,6 +132,13 @@ export class ChatPageComponent implements AfterViewInit{
   toggleMenu(id: number, event: Event) {
     event.stopPropagation();
     this.menuOpenId.set(this.menuOpenId() === id ? null : id);
+  }
+
+  @HostListener('document:click')
+  onDocumentClick() {
+    if (this.menuOpenId() !== null) {
+      this.menuOpenId.set(null);
+    }
   }
 
   renameConversation(id: number) {
