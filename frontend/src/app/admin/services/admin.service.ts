@@ -13,56 +13,39 @@ export class AdminService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
 
-  getUsers(): Observable<UserAdmin[]> {
-    const token = localStorage.getItem('token');
+  private getHeaders() {
+    return {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+  }
 
+  private handleError<T>() {
+    return catchError<T, Observable<never>>((error: any) => {
+      this.authService.handleAuthError(error, '/auth/login');
+      return throwError(() => error);
+    });
+  }
+
+  getUsers(): Observable<UserAdmin[]> {
     return this.http
-      .get<UserAdmin[]>(`${baseUrl}/admin/usuarios`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .pipe(
-        catchError((error: any) => {
-          this.authService.handleAuthError(error, '/auth/login');
-          return throwError(() => error);
-        }),
-      );
+      .get<UserAdmin[]>(`${baseUrl}/admin/usuarios`, this.getHeaders())
+      .pipe(this.handleError());
   }
 
   getStats(): Observable<AdminStats> {
-    const token = localStorage.getItem('token');
-
     return this.http
-      .get<AdminStats>(`${baseUrl}/admin/stats`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .pipe(
-        catchError((error: any) => {
-          this.authService.handleAuthError(error, '/auth/login');
-          return throwError(() => error);
-        }),
-      );
+      .get<AdminStats>(`${baseUrl}/admin/stats`, this.getHeaders())
+      .pipe(this.handleError());
   }
 
   toggleBlock(userId: number): Observable<any> {
-    const token = localStorage.getItem('token');
-
     return this.http
       .patch(
         `${baseUrl}/admin/usuarios/${userId}/toggle-block`,
         {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
-      .pipe(
-        catchError((error) => {
-          this.authService.handleAuthError(error, '/auth/login');
-          return throwError(() => error);
-        }),
-      );
+        this.getHeaders())
+      .pipe(this.handleError());
   }
 }

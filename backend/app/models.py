@@ -31,7 +31,7 @@ class Mensaje(db.Model):
     __tablename__ = 'mensajes'
 
     id = db.Column(db.Integer, primary_key=True)
-    conversacion_id = db.Column(db.Integer, db.ForeignKey('conversaciones.id'), nullable=False)
+    conversacion_id = db.Column(db.Integer, db.ForeignKey('conversaciones.id', ondelete='CASCADE'), nullable=False)
     remitente = db.Column(db.String(20), nullable=False) # 'usuario' o 'ia'
     contenido = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
