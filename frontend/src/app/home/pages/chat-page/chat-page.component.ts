@@ -5,6 +5,7 @@ import { FormsModule, NgModel } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { ChatService } from '../../services/chat.service';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { MarkdownComponent } from 'ngx-markdown';
 
 interface Message {
   text: string;
@@ -12,7 +13,7 @@ interface Message {
 }
 
 @Component({
-  imports: [FormsModule, NgClass, RouterLink],
+  imports: [FormsModule, NgClass, RouterLink, MarkdownComponent],
   templateUrl: './chat-page.component.html',
 })
 export class ChatPageComponent implements AfterViewInit{

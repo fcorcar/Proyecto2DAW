@@ -115,7 +115,11 @@
                   'bg-indigo-600/20 border border-indigo-500/30':
                     msg.sender === 'usuario',
                 }">
-            {{ msg.text }}
+            @if (msg.sender === 'ia') {
+              <markdown [data]="msg.text"></markdown>
+            } @else {
+              {{ msg.text }}
+            }
           </div>
         </div>
         }
