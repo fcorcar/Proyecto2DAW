@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RouterLink } from "@angular/router";
 import { FormsModule, NgModel } from '@angular/forms';
@@ -19,7 +19,7 @@ interface Message {
   imports: [FormsModule, NgClass, RouterLink],
   templateUrl: './chat-page.component.html',
 })
-export class ChatPageComponent {
+export class ChatPageComponent implements AfterViewInit{
   authService = inject(AuthService);
   chatService = inject(ChatService);
 
@@ -49,6 +49,10 @@ export class ChatPageComponent {
 
 
   // METODOS
+  ngAfterViewInit(): void {
+    this.focusInput();
+  }
+
   startNewConversation() {
     this.activeConversationId.set(null);
     this.messages.set([]);
