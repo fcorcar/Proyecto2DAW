@@ -89,14 +89,13 @@
         Hola, {{ userName() }}
       </h1>
       <p class="text-gray-400 text-sm max-w-md mb-8">
-        ¿Qué consulta o avería tienes hoy en casa? Escribe tu mensaje para
-        recibir asistencia paso a paso.
+        ¿Qué consulta o avería tienes hoy en casa?
       </p>
 
       <div class="w-full max-w-2xl relative group">
         <input #chatInput type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()"
-          placeholder="Escribe un mensaje a tu hogar..."
-          class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm placeholder-gray-500 shadow-2xl text-white" />
+          placeholder="Escribe el problema en tu hogar..."
+          class="pt-10 pb-10 w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-md placeholder-gray-500 shadow-2xl text-white" />
         <button (click)="sendMessage()"
           class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-300 hover:text-cyan-300 hover:scale-110 transition-all cursor-pointer">
           <i class="fa-regular fa-paper-plane"></i>
@@ -141,7 +140,7 @@
     <section class="p-6 bg-transparent">
       <div class="max-w-4xl mx-auto relative group">
         <input #chatInput type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" [disabled]="isLoading()"
-          placeholder="Escribe un mensaje a tu hogar..."
+          placeholder="Escribe el problema en tu hogar..."
           class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all text-sm placeholder-gray-500 shadow-2xl text-white disabled:opacity-50" />
         <button (click)="sendMessage()" [disabled]="isLoading()"
           class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-300 hover:text-cyan-300 hover:scale-110 transition-all cursor-pointer disabled:opacity-50">

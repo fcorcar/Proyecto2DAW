@@ -7,6 +7,8 @@ from .routes.auth import auth_bp
 from .routes.admin import admin_bp
 from .routes.chat import chat_bp
 from .utils.jwt_handlers import register_jwt_handlers
+from .models import db, Usuario
+from .services.user_service import UserService
 
 jwt = JWTManager()
 
@@ -24,6 +26,19 @@ def create_app():
     # Crear las tablas de la base de datos si no existen
     with app.app_context():
         db.create_all()
+        
+        if not Usuario.query.first():
+            print("Creando cuenta de Administrador por defecto...")
+            
+            admin_user = UserService.create_user(
+                name = app.config.get('ADMIN_NAME'),
+                email = app.config.get('ADMIN_EMAIL'),
+                password = app.config.get('ADMIN_PASSWORD')
+            )
+            
+            admin_user.rol = 'admin'
+            db.session.commit()
+            print("Cuenta de administrador creada con éxito")
 
     # Rutas
     app.register_blueprint(auth_bp, url_prefix='/api/auth')

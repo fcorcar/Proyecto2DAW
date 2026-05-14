@@ -17,3 +17,8 @@ class Config:
     
     # API Key de Groq
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+    # Credenciales Admin
+    ADMIN_NAME = os.getenv("ADMIN_NAME")
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
