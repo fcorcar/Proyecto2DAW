@@ -29,7 +29,7 @@
           </button>
 
         @if (menuOpenId() === conv.id) {
-        <div class="absolute right-2 top-10 w-32 bg-slate-800 border border-white/10 rounded-lg shadow-xl py-1 z-30">
+        <div (click)="$event.stopPropagation()" class="absolute right-2 top-10 w-32 bg-slate-800 border border-white/10 rounded-lg shadow-xl py-1 z-30">
           <button (click)="renameConversation(conv.id)" class="w-full text-left px-4 py-2 text-xs hover:bg-white/10">
             Renombrar
           </button>
