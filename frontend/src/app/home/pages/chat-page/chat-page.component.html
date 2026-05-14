@@ -12,21 +12,21 @@
 
     <!-- Conversaciones -->
     <nav class="flex-1 overflow-y-auto px-3 space-y-1">
-      @for (conv of conversations(); track conv.id) {
+      @for (conv of conversationsResource.value(); track conv.id) {
       <div class="group relative flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all"
         [ngClass]="{
-            'bg-white/10': activeConversationId() === conv.id,
-            'hover:bg-white/5': activeConversationId() !== conv.id,
-          }" (click)="activeConversationId.set(conv.id)">
-        <div class="flex items-center gap-3 overflow-hidden">
-          <i class="fa-regular fa-comment-dots text-gray-500"></i>
-          <span class="truncate text-sm font-medium">{{ conv.title }}</span>
-        </div>
+              'bg-white/10': activeConversationId() === conv.id,
+              'hover:bg-white/5': activeConversationId() !== conv.id
+            }"
+          (click)="loadConversation(conv.id)"> <div class="flex items-center gap-3 overflow-hidden">
+            <i class="fa-regular fa-comment-dots text-gray-500"></i>
+            <span class="truncate text-sm font-medium">{{ conv.title }}</span>
+          </div>
 
-        <button (click)="toggleMenu(conv.id, $event)"
-          class="opacity-0 group-hover:opacity-100 p-1 hover:text-cyan-400 transition-opacity">
-          <i class="fa-solid fa-ellipsis"></i>
-        </button>
+          <button (click)="toggleMenu(conv.id, $event)"
+            class="opacity-0 group-hover:opacity-100 p-1 hover:text-cyan-400 transition-opacity">
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
 
         @if (menuOpenId() === conv.id) {
         <div class="absolute right-2 top-10 w-32 bg-slate-800 border border-white/10 rounded-lg shadow-xl py-1 z-30">
@@ -109,11 +109,11 @@
     <section #scrollContainer class="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-white/10">
       <div class="max-w-4xl mx-auto space-y-6 flex flex-col">
         @for (msg of messages(); track $index) {
-        <div class="flex w-full" [class.justify-end]="msg.sender === 'user'">
+        <div class="flex w-full" [class.justify-end]="msg.sender === 'usuario'">
           <div class="max-w-[85%] md:max-w-[75%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm" [ngClass]="{
                   'bg-white/10 border border-white/10': msg.sender === 'ia',
                   'bg-indigo-600/20 border border-indigo-500/30':
-                    msg.sender === 'user',
+                    msg.sender === 'usuario',
                 }">
             {{ msg.text }}
           </div>

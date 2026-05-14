@@ -4,15 +4,11 @@ import { RouterLink } from "@angular/router";
 import { FormsModule, NgModel } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { ChatService } from '../../services/chat.service';
-
-interface Conversation {
-  id: number;
-  title: string;
-}
+import { rxResource } from '@angular/core/rxjs-interop';
 
 interface Message {
   text: string;
-  sender: 'user' | 'ia';
+  sender: 'usuario' | 'ia';
 }
 
 @Component({
@@ -31,20 +27,16 @@ export class ChatPageComponent implements AfterViewInit{
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   @ViewChild('chatInput') private chatInput!: ElementRef<HTMLInputElement>;
 
-  //! Datos simulados
-  conversations = signal<Conversation[]>([
-    { id: 1, title: 'Optimización de luces salón con cosas grandes' },
-    { id: 2, title: 'Configuración de seguridad' },
-    { id: 3, title: 'Rutina de mañana' }
-  ]);
+  // Conversaciones
+  conversationsResource = rxResource({
+    loader: () => this.chatService.getConversations()
+  });
 
   // Mensajes
   messages = signal<Message[]>([]);
   newMessage = signal('');
   activeConversationId = signal<number | null>(null);
   isLoading = signal(false);
-
-  //! Menu lateral
   menuOpenId = signal<number | null>(null);
 
 
@@ -60,26 +52,48 @@ export class ChatPageComponent implements AfterViewInit{
     this.focusInput();
   }
 
+  loadConversation(id: number) {
+    if (this.isLoading()) return;
+
+    this.activeConversationId.set(id);
+    this.isLoading.set(true);
+    this.messages.set([]);
+
+    this.chatService.getMessages(id).subscribe({
+      next: (msgs) => {
+        this.messages.set(msgs);
+        this.isLoading.set(false);
+        this.scrollToBottom();
+        this.focusInput();
+      },
+      error: () => this.isLoading.set(false)
+    });
+
+  }
+
   sendMessage() {
     const promptText = this.newMessage().trim();
     if (!promptText || this.isLoading()) return;
 
+    // Comprobamos que sea nueva conversacion
+    const isFirstMessage = this.activeConversationId() === null;
+
     // Añadimos el mensaje del usuario a la pantalla
-    this.messages.update(prev => [...prev, { text: promptText, sender: 'user' }]);
+    this.messages.update(prev => [...prev, { text: promptText, sender: 'usuario' }]);
     this.newMessage.set('');
     this.isLoading.set(true);
-
     this.scrollToBottom();
 
     // Peticion a la API
     this.chatService.sendMessage(promptText, this.activeConversationId()).subscribe({
       next: (res) => {
-        // Guardamos en el componente el id obtenido de bd
         this.activeConversationId.set(res.conversationId);
-
-        // Añadimos el mensaje de respuesta de la IA
         this.messages.update(prev => [...prev, { text: res.response, sender: 'ia' }]);
         this.isLoading.set(false);
+
+        if (isFirstMessage) {
+          this.conversationsResource.reload();
+        }
 
         this.scrollToBottom();
         this.focusInput();
@@ -115,21 +129,30 @@ export class ChatPageComponent implements AfterViewInit{
     }, 50);
   }
 
-  //!
   toggleMenu(id: number, event: Event) {
     event.stopPropagation();
     this.menuOpenId.set(this.menuOpenId() === id ? null : id);
   }
 
-  //!
   renameConversation(id: number) {
-    console.log('Renombrando...', id);
+    const newTitle = prompt("Introduce el nuevo título de la conversación:");
+    if (!newTitle) return;
+
+    this.chatService.renameConversation(id, newTitle).subscribe({
+      next: () => this.conversationsResource.reload()
+    });
     this.menuOpenId.set(null);
   }
 
-  //!
   deleteConversation(id: number) {
-    this.conversations.update(list => list.filter(c => c.id !== id));
+    this.chatService.deleteConversation(id).subscribe({
+      next: () => {
+        this.conversationsResource.reload();
+        if (this.activeConversationId() === id) {
+          this.startNewConversation();
+        }
+      }
+    });
     this.menuOpenId.set(null);
   }
 
@@ -137,5 +160,3 @@ export class ChatPageComponent implements AfterViewInit{
     this.authService.logout();
   }
 }
-
-

@@ -1,4 +1,3 @@
-# backend/app/services/chat_service.py
 from app.models import db, Conversacion, Mensaje
 from app.services.ia_service import IaService
 
@@ -45,3 +44,32 @@ class ChatService:
         except Exception as e:
             db.session.rollback()
             return None, f"Error en el proceso: {str(e)}"
+    
+    @staticmethod
+    def get_user_conversations(user_id):
+        return Conversacion.query.filter_by(usuario_id=user_id).order_by(Conversacion.id.desc()).all()
+
+    @staticmethod
+    def get_conversation_messages(user_id, conversation_id):
+        conversacion = Conversacion.query.filter_by(id=conversation_id, usuario_id=user_id).first()
+        if not conversacion:
+            return None
+        return Mensaje.query.filter_by(conversacion_id=conversation_id).all()
+
+    @staticmethod
+    def rename_conversation(user_id, conversation_id, new_title):
+        conversacion = Conversacion.query.filter_by(id=conversation_id, usuario_id=user_id).first()
+        if not conversacion:
+            return False
+        conversacion.titulo = new_title
+        db.session.commit()
+        return True
+
+    @staticmethod
+    def delete_conversation(user_id, conversation_id):
+        conversacion = Conversacion.query.filter_by(id=conversation_id, usuario_id=user_id).first()
+        if not conversacion:
+            return False
+        db.session.delete(conversacion)
+        db.session.commit()
+        return True
