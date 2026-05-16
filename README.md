@@ -109,26 +109,32 @@ http://cortes-carmona-francisco.proyecto-daw.iesabdera.local
 
 
 ## Comandos útiles para la gestión del entorno
+Ver estado de los contenedores:
+
+```bash
+sudo docker-compose ps
+```
+
 Detener la aplicación:
 
 ```bash
-docker-compose stop
+sudo docker-compose stop
 ```
 
 Arrancar servicios:
 
 ```bash
-docker-compose start
+sudo docker-compose start
 ```
 
 Eliminar contenedores:
 
 ```bash
-docker-compose down
+sudo docker-compose down
 ```
 
 Ver logs en tiempo real:
 
 ```bash
-docker-compose logs -f
+sudo docker-compose logs -f
 ```
