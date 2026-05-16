@@ -1,65 +1,134 @@
-# Asistente del Hogar con IA - Proyecto 2DAW
+# Chat Home IA - Guía de Despliegue con Docker
 
-Proyecto web Full-Stack (Angular + Flask + IA) desarrollado como Proyecto Final para 2º DAW. Consiste en un asistente inteligente basado en Google Gemini diseñado para ayudar a los usuarios a resolver problemas cotidianos del hogar.
+![Configuración Nginx](./docs/imgs/ChatHomeIA.png)
 
----
-
-## Como levantar el proyecto en local
-
-Para ejecutar este proyecto, necesitas tener instalados Node.js y Python 3. Debes abrir dos terminales distintas (una para el servidor y otra para la web).
-
-### PASO 1: Levantar el Backend (API)
-
-1. Abre una terminal y entra en la carpeta del backend:
-
-cd backend
+Chat Home es una aplicación web diseñada como un asistente virtual inteligente especializado en la resolución de tareas y gestión de incidencias del hogar. El ecosistema está compuesto por una interfaz desarrollada en Angular 19, un backend robusto en Flask (Python) encargado de conectar con los modelos de lenguaje mediante la API de Groq, y un almacenamiento relacional con MariaDB/MySQL. La infraestructura completa se encuentra contenedorizada mediante Docker y unificada tras un proxy inverso con Nginx.
 
 
-2. Crea y activa el entorno virtual:
 
-- En Windows:
-python -m venv .venv
-.venv\Scripts\activate
-
-- En Mac/Linux:
-python3 -m venv .venv
-source .venv/bin/activate
+<br>
 
 
-3. Instala las dependencias necesarias:
 
-pip install -r requirements.txt
+## Requisitos previos
+Antes de comenzar con la instalación, es necesario asegurarse de tener instalados estos dos programas en el equipo:
 
+1. Git (para poder clonar y descargar el código fuente).
+* Linux: `sudo apt install git -y`
+* Windows: Descargar desde la web oficial. https://git-scm.com/install/windows
 
-4. Configura las claves de seguridad:
-
-Copia el archivo .env.example, renombralo a .env y rellena tu GOOGLE_API_KEY y una JWT_SECRET_KEY segura de al menos 32 caracteres.
-
-
-5. Arranca el servidor:
-
-python run.py
-
-(El backend quedara escuchando peticiones en http://localhost:5000)
+2. Docker (el motor que ejecutará la aplicación).
+* Linux: `sudo apt install docker-compose -y`
+* Windows: Descargar desde la web oficial. https://docs.docker.com/desktop/setup/install/windows-install/
 
 
-### PASO 2: Levantar el Frontend (Angular)
 
-1. Abre una NUEVA terminal (dejando la del backend encendida) y entra en la carpeta del frontend:
-
-cd frontend
+<br>
 
 
-2. Instala los paquetes de Node:
 
-npm install
+## Guía paso a paso para Linux (Ubuntu)
+
+### 1. Descargar el repositorio y entrar a la carpeta del proyecto
+
+```bash
+git clone https://github.com/fcorcar/Proyecto2DAW.git
+cd Proyecto2DAW
+```
+
+### 2. Configurar el direccionamiento del dominio local
+Para que el proxy de Nginx intercepte correctamente las llamadas de la aplicación, añadimos el dominio local:
+
+```bash
+echo "127.0.0.1   cortes-carmona-francisco.proyecto-daw.iesabdera.local" | sudo tee -a /etc/hosts > /dev/null
+```
+
+### 3. Configurar las variables de entorno
+Crea tu archivo de configuración personal a partir de la plantilla del proyecto:
+
+```bash
+cp .env.example .env
+```
+
+Abre el archivo `.env` y rellena los campos con tus credenciales reales.
 
 
-3. Arranca el servidor de desarrollo de Angular:
+### 4. Construir y levantar la aplicación completa
+```bash
+sudo docker-compose up -d --build
+```
 
-ng serve
+
+<br>
 
 
-4. Visualizar la web:
 
-Una vez termine de compilar, abre tu navegador web y entra en: http://localhost:4200
+## Guía paso a paso para Windows
+### 1. Descargar el repositorio y entrar a la carpeta del proyecto
+```bash
+git clone https://github.com/fcorcar/Proyecto2DAW.git
+cd Proyecto2DAW
+```
+
+### 2. Configurar el direccionamiento del dominio local
+1. Abre el Bloc de notas como administrador.
+2. Ve a `C:\Windows\System32\drivers\etc\hosts`.
+3. Añade esta línea:
+
+```bash
+127.0.0.1   cortes-carmona-francisco.proyecto-daw.iesabdera.local
+```
+
+### 3. Configurar las variables de entorno
+```bash
+copy .env.example .env
+```
+
+Edita el archivo `.env` con tus datos.
+
+
+### 4. Construir y levantar la aplicación completa
+```bash
+docker-compose up -d --build
+```
+
+
+<br>
+
+
+
+## Acceso a Chat Home IA
+Accede desde el navegador mediante:
+
+http://cortes-carmona-francisco.proyecto-daw.iesabdera.local
+
+
+
+<br>
+
+
+
+## Comandos útiles para la gestión del entorno
+Detener la aplicación:
+
+```bash
+docker-compose stop
+```
+
+Arrancar servicios:
+
+```bash
+docker-compose start
+```
+
+Eliminar contenedores:
+
+```bash
+docker-compose down
+```
+
+Ver logs en tiempo real:
+
+```bash
+docker-compose logs -f
+```

@@ -17,7 +17,6 @@ def create_app():
     app.config.from_object(Config)
 
     # Inicializar
-    # CORS(app, resources={r"/api/*": {"origins": "http://localhost:4200"}})
     CORS(app)
     db.init_app(app)
     jwt.init_app(app)
