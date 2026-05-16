@@ -2,7 +2,7 @@
 
 ![Configuración Nginx](./docs/imgs/ChatHomeIA.png)
 
-Chat Home es una aplicación web diseñada como un asistente virtual inteligente especializado en la resolución de tareas y gestión de incidencias del hogar. El ecosistema está compuesto por una interfaz desarrollada en Angular 19, un backend robusto en Flask (Python) encargado de conectar con los modelos de lenguaje mediante la API de Groq, y un almacenamiento relacional con MariaDB/MySQL. La infraestructura completa se encuentra contenedorizada mediante Docker y unificada tras un proxy inverso con Nginx.
+Chat Home IA es una aplicación web diseñada como un asistente virtual inteligente especializado en la resolución de tareas y gestión de incidencias del hogar. El ecosistema está compuesto por una interfaz desarrollada en Angular 19, un backend robusto en Flask (Python) encargado de conectar con los modelos de lenguaje mediante la API de Groq, y un almacenamiento relacional con MariaDB/MySQL. La infraestructura completa se encuentra contenedorizada mediante Docker y unificada tras un proxy inverso con Nginx.
 
 
 
