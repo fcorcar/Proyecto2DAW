@@ -38,7 +38,6 @@ Antes de comenzar con la instalación, es necesario asegurarse de tener instalad
     # 4. Instalar Docker Engine y el plugin moderno de Compose
     sudo apt update
     sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-
     ```
 * Windows: Descargar desde la web oficial. https://docs.docker.com/desktop/setup/install/windows-install/
 
@@ -158,4 +157,64 @@ Ver logs en tiempo real:
 
 ```bash
 sudo docker compose logs -f
+```
+
+
+
+<br>
+
+
+
+## Posibles errores o conflictos
+A la hora de instalar Docker V2 en Ubuntu puede haber algunos conflictos o errores debido a paquetes antiguos u obsoletos.
+
+### Conflicto de versiones
+Si cuentas con la V1 y quieres realizar una actualización a la V2 debes ejecutar lo siguiente:
+```bash
+# ELIMINACION V1
+#1. Detener y borrar los contenedores y volúmenes actuales
+sudo docker-compose down -v
+
+#2. Desinstalar los paquetes antiguos de Ubuntu
+sudo apt-get remove docker docker-engine docker.io containerd runc docker-compose -y
+sudo apt-get autoremove -y
+
+#3. Borrar el rastro
+sudo rm -rf /var/lib/docker
+sudo rm -rf /var/lib/containerd
+
+#4. Limpieza profunda
+sudo apt-get purge docker.io docker-compose python3-compose python3-docker python3-dockerpty -y
+sudo apt-get autoremove --purge -y
+
+#5. Limpiar la memoria de la terminal
+hash -r
+
+# INSTALACION V2
+# 1. Actualizar los paquetes e instalar dependencias necesarias
+sudo apt update
+sudo apt install ca-certificates curl -y
+
+# 2. Añadir la clave GPG oficial de Docker
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# 3. Añadir el repositorio oficial a las fuentes de apt
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# 4. Instalar Docker Engine y el plugin moderno de Compose
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+```
+
+### Error "Cannot connect to the Docker daemon"
+El problema surge porque el servicio de Docker está apagado, solo hay que levantarlo con el siguiente comando:
+
+```bash
+sudo systemctl enable --now docker
 ```
