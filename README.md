@@ -1,4 +1,4 @@
-# Chat Home IA - Guía de Despliegue con Docker
+# Chat Home IA - Guía de Despliegue con Docker V2
 
 ![Configuración Nginx](./docs/imgs/ChatHomeIA.png)
 
@@ -17,8 +17,29 @@ Antes de comenzar con la instalación, es necesario asegurarse de tener instalad
 * Linux: `sudo apt install git -y`
 * Windows: Descargar desde la web oficial. https://git-scm.com/install/windows
 
-2. Docker (el motor que ejecutará la aplicación).
-* Linux: `sudo apt install docker-compose -y`
+2. Docker V2 (el motor que ejecutará la aplicación).
+* Linux: 
+    ```bash
+    # 1. Actualizar los paquetes e instalar dependencias necesarias
+    sudo apt update
+    sudo apt install ca-certificates curl -y
+
+    # 2. Añadir la clave GPG oficial de Docker
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+    # 3. Añadir el repositorio oficial a las fuentes de apt
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    # 4. Instalar Docker Engine y el plugin moderno de Compose
+    sudo apt update
+    sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+    ```
 * Windows: Descargar desde la web oficial. https://docs.docker.com/desktop/setup/install/windows-install/
 
 
@@ -55,7 +76,7 @@ Abre el archivo `.env` y rellena los campos con tus credenciales reales.
 
 ### 4. Construir y levantar la aplicación completa
 ```bash
-sudo docker-compose up -d --build
+sudo docker compose up -d --build
 ```
 
 
@@ -89,7 +110,7 @@ Edita el archivo `.env` con tus datos.
 
 ### 4. Construir y levantar la aplicación completa
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 
@@ -112,29 +133,29 @@ http://cortes-carmona-francisco.proyecto-daw.iesabdera.local
 Ver estado de los contenedores:
 
 ```bash
-sudo docker-compose ps
+sudo docker compose ps
 ```
 
 Detener la aplicación:
 
 ```bash
-sudo docker-compose stop
+sudo docker compose stop
 ```
 
 Arrancar servicios:
 
 ```bash
-sudo docker-compose start
+sudo docker compose start
 ```
 
 Eliminar contenedores:
 
 ```bash
-sudo docker-compose down
+sudo docker compose down
 ```
 
 Ver logs en tiempo real:
 
 ```bash
-sudo docker-compose logs -f
+sudo docker compose logs -f
 ```
