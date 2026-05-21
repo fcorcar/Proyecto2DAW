@@ -21,6 +21,8 @@ export class ChatPageComponent implements AfterViewInit{
   isAdmin = signal(this.authService.user()?.rol === 'admin');
   userName = signal(this.authService.user()?.name);
 
+  isMobileMenuOpen = signal(false);
+
   // Etiquetas HTML
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   @ViewChild('chatInput') private chatInput!: ElementRef<HTMLInputElement>;
@@ -47,6 +49,7 @@ export class ChatPageComponent implements AfterViewInit{
     this.activeConversationId.set(null);
     this.messages.set([]);
     this.newMessage.set('');
+    this.isMobileMenuOpen.set(false);
     this.focusInput();
   }
 
@@ -56,6 +59,7 @@ export class ChatPageComponent implements AfterViewInit{
     this.activeConversationId.set(id);
     this.isLoading.set(true);
     this.messages.set([]);
+    this.isMobileMenuOpen.set(false);
 
     this.chatService.getMessages(id).subscribe({
       next: (msgs) => {
@@ -163,5 +167,9 @@ export class ChatPageComponent implements AfterViewInit{
 
   logout() {
     this.authService.logout();
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen.update(val => !val);
   }
 }
